@@ -50,25 +50,24 @@ User ID: ${ctx.message.chat.id}`
     let news = await webScraper();
 
     // send news
-    news.forEach((obj) => {
-      ctx.telegram.sendPhoto(
-        channelId,
-        { url: obj.img },
-        {
-          caption: `
-${obj.title}
-${obj.link}
+    await ctx.telegram.sendPhoto(
+      channelId,
+      { url: news[0].img },
+      {
+        caption: `
+${news[0].title}
+
+${news[0].link}
                 `,
-        }
-      );
-    });
+      }
+    );
 
     setInterval(async () => {
       // store the old news
       let oldNews = [...news];
 
       // update news
-      const newsUpdate = await webScraper();
+      const newsUpdate = await webScraper()
 
       // look for the news that have changed and store it in onlyNewNews
       for (let i = 0; i < news.length; i++) {
@@ -77,21 +76,23 @@ ${obj.link}
           news[i].link = newsUpdate[i].link;
           news[i].img = newsUpdate[i].img;
 
-          ctx.telegram.sendPhoto(
+          console.log(newsUpdate[i].title + '\n')
+
+          await ctx.telegram.sendPhoto(
             channelId,
-            {url: news[i].img},
+            { url: newsUpdate[i].img },
             {
               caption: `
-${news[i].title}
-${news[i].link}
-              `
+${newsUpdate[i].title}
+
+${newsUpdate[i].link}
+              `,
             }
-          )
+          );
         }
       }
-    }, 15 * 60 * 1000);
+    }, 10 * 60 * 1000);
   });
-
 
   // check if bot is working
   bot.hears("Hello", (ctx) => {
@@ -100,7 +101,7 @@ ${news[i].link}
       "Hey, I'm working, don't worry ;)"
     );
   });
-  
+
   // echo the text to the channel
   bot.on("text", (ctx) => {
     ctx.telegram.sendMessage(
