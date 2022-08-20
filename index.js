@@ -103,8 +103,8 @@ ${news[i].link}
       }
     }
 
-    // get new data every 5 minutes 
-    setInterval(updateNews, 5 * 60 * 1000);
+    // get new data every x minutes 
+    setInterval(updateNews, 20 * 60 * 1000);
   });
 
   // check if bot is working
