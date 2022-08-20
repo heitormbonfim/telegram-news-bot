@@ -10,10 +10,10 @@ async function main() {
   bot.start((ctx) => {
     ctx.reply(
       `
-This bot sends news about cryptocurrencies.
+EN: This bot sends news about cryptocurrencies.
 Check the commands on /help
 
-Este bot envia noticias sobre crypto moeadas.
+PT: Este bot envia noticias sobre crypto moeadas.
 Cheque os comandos em /help
 `
     );
@@ -25,11 +25,17 @@ Cheque os comandos em /help
       ctx.message.chat.id,
       `
 Bot commands:
-/start - description / descrição
+/start : 
+EN: description
+PT: descrição
 
-/start_news - to start sending news / para começar a enviar notícias
+/start_news : 
+EN: to start sending news
+PT: para começar a enviar notícias
 
-/user_info - to show info about the user / para mostra informações sobre o usuário
+/user_info :
+EN: to show info about the user 
+PT: para mostra informações sobre o usuário
     `
     );
   });
@@ -41,6 +47,7 @@ Bot commands:
       `
 Username: ${ctx.message.chat.username}
 First Name: ${ctx.message.chat.first_name}
+Last Name: ${ctx.message.chat.last_name}
 User ID: ${ctx.message.chat.id}`
     );
   });

@@ -2,3 +2,4 @@ node_modules
 .env
 tests.js
 data.json
+fake-scraper.js
