@@ -57,7 +57,7 @@ User ID: ${ctx.message.chat.id}`
     let news = await webScraper();
 
     // send the news
-    for (let i = 0; i < news.length; i++) {
+    for (let i = news.length - 1; i >= 0; i--) {
       await ctx.telegram.sendPhoto(
         channelId,
         {url: news[i].img},
@@ -79,13 +79,13 @@ ${news[i].link}
       const newsUpdate = await webScraper();
 
       // look for the news that have changed and store it in onlyNewNews
-      for (let i = 0; i < news.length; i++) {
+      for (let i = news.length - 1; i >= 0; i--) {
         if (oldNews[i].title != newsUpdate[i].title) {
           news = [...newsUpdate];
 
           // resetting array data structure
-          oldNews.unshift(news[i]);
-          oldNews.pop();
+          oldNews.push(news[i]);
+          oldNews.shift();
 
           // send the news
           await ctx.telegram.sendPhoto(
