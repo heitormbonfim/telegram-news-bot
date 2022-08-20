@@ -79,13 +79,13 @@ ${news[i].link}
       const newsUpdate = await webScraper();
 
       // look for the news that have changed and store it in onlyNewNews
-      for (let i = news.length - 1; i >= 0; i--) {
+      for (let i = 0; i < news.length; i++) {
         if (oldNews[i].title != newsUpdate[i].title) {
           news = [...newsUpdate];
 
           // resetting array data structure
-          oldNews.push(news[i]);
-          oldNews.shift();
+          oldNews.unshift(news[i]);
+          oldNews.pop();
 
           // send the news
           await ctx.telegram.sendPhoto(
