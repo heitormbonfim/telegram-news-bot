@@ -49,49 +49,55 @@ User ID: ${ctx.message.chat.id}`
     // get the last 5 news
     let news = await webScraper();
 
-    // send news
-    await ctx.telegram.sendPhoto(
-      channelId,
-      { url: news[0].img },
-      {
-        caption: `
-${news[0].title}
+    // send the news
+    for (let i = 0; i < news.length; i++) {
+      await ctx.telegram.sendPhoto(
+        channelId,
+        {url: news[i].img},
+        {
+          caption: `
+${news[i].title}
 
-${news[0].link}
-                `,
-      }
-    );
-
-    setInterval(async () => {
+${news[i].link}
+          `
+        }
+      )
+    }
+    
+    async function updateNews() {
       // store the old news
       let oldNews = [...news];
 
       // update news
-      const newsUpdate = await webScraper()
+      const newsUpdate = await webScraper();
 
       // look for the news that have changed and store it in onlyNewNews
       for (let i = 0; i < news.length; i++) {
         if (oldNews[i].title != newsUpdate[i].title) {
-          news[i].title = newsUpdate[i].title;
-          news[i].link = newsUpdate[i].link;
-          news[i].img = newsUpdate[i].img;
+          news = [...newsUpdate];
 
-          console.log(newsUpdate[i].title + '\n')
+          // resetting array data structure
+          oldNews.unshift(news[i]);
+          oldNews.pop();
 
+          // send the news
           await ctx.telegram.sendPhoto(
             channelId,
-            { url: newsUpdate[i].img },
+            {url: news[i].img},
             {
               caption: `
-${newsUpdate[i].title}
+${news[i].title}
 
-${newsUpdate[i].link}
-              `,
+${news[i].link}
+              `
             }
-          );
+          )
         }
       }
-    }, 10 * 60 * 1000);
+    }
+
+    // get new data every 5 minutes 
+    setInterval(updateNews, 5 * 60 * 1000);
   });
 
   // check if bot is working
