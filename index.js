@@ -1,6 +1,7 @@
 require("dotenv").config();
 const { webScraper } = require("./web-scraper");
 const { Telegraf } = require("telegraf");
+const { fakeScraper } = require("./fake-scraper");
 
 async function main() {
   const bot = new Telegraf(process.env.BOT_TOKEN);
@@ -54,57 +55,57 @@ User ID: ${ctx.message.chat.id}`
 
   bot.command("start_news", async (ctx) => {
     // get the last 5 news
-    let news = await webScraper();
+    let news = await fakeScraper();
 
     // send the news
     for (let i = news.length - 1; i >= 0; i--) {
       await ctx.telegram.sendPhoto(
         channelId,
-        {url: news[i].img},
+        { url: news[i].img },
         {
           caption: `
-${news[i].title}
+${news[i].title.toUpperCase()}
 
 ${news[i].link}
-          `
+          `,
         }
-      )
+      );
     }
-    
+
     async function updateNews() {
       // store the old news
       let oldNews = [...news];
 
       // update news
-      const newsUpdate = await webScraper();
+      const newsUpdate = await fakeScraper();
 
       // look for the news that have changed and store it in onlyNewNews
       for (let i = 0; i < news.length; i++) {
         if (oldNews[i].title != newsUpdate[i].title) {
           news = [...newsUpdate];
 
-          // resetting array data structure
+          // resetting array structure
           oldNews.unshift(news[i]);
           oldNews.pop();
 
           // send the news
           await ctx.telegram.sendPhoto(
             channelId,
-            {url: news[i].img},
+            { url: newsUpdate[i].img },
             {
               caption: `
-${news[i].title}
+${newsUpdate[i].title.toUpperCase()}
 
-${news[i].link}
-              `
+${newsUpdate[i].link}
+              `,
             }
-          )
+          );
         }
       }
     }
 
-    // get new data every x minutes 
-    setInterval(updateNews, 20 * 60 * 1000);
+    // get new data every x minutes
+    setInterval(updateNews, 5 * 1000);
   });
 
   // check if bot is working

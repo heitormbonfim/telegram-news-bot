@@ -1,10 +1,19 @@
 const axios = require("axios");
 const cheerio = require("cheerio");
+const fs = require('fs')
 
-async function main() {
+// pages to scrape
+const urls = [
+  "https://br.investing.com/news/economy", // economy
+  "https://br.investing.com/news/cryptocurrency-news", // crypto
+  "https://br.investing.com/news/economic-indicators" // economic indicators 
+]
+
+async function webScraper(url) {
+  // setting data to the server accept the request
   const options = {
     method: "GET",
-    url: "https://br.investing.com/news/cryptocurrency-news",
+    url: url,
     headers: {
       authority: "br.investing.com",
       accept:
@@ -24,6 +33,7 @@ async function main() {
     },
   };
 
+  // making request and saving page html
   const html = await axios
     .request(options)
     .then(function (response) {
@@ -33,9 +43,11 @@ async function main() {
       console.error(error);
     });
 
+  // loading html parser
   const $ = cheerio.load(html);
 
-  let news = [
+  // array of objects with values from elements attribute
+  const news = [
     {
       title: $(
         "#leftColumn > div.largeTitle > article:nth-child(1) > div.textDiv > a"
@@ -115,5 +127,20 @@ async function main() {
 
   return news;
 }
+
+// loop through all links and return a single array with all of them gathered
+async function main(urls_array) {
+  const allNews2dArray = []
+  
+  for (let i = 0; i < urls_array.length; i++) {
+    allNews2dArray.push(await webScraper(urls_array[i]))
+  }
+
+  const allNewsFlattenedArray = [].concat(...allNews2dArray)
+
+  return allNewsFlattenedArray
+}
+
+main(urls)
 
 module.exports.webScraper = main;
