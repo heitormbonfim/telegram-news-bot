@@ -1,13 +1,5 @@
 const axios = require("axios");
 const cheerio = require("cheerio");
-const fs = require('fs')
-
-// pages to scrape
-const urls = [
-  "https://br.investing.com/news/economy", // economy
-  "https://br.investing.com/news/cryptocurrency-news", // crypto
-  "https://br.investing.com/news/economic-indicators" // economic indicators 
-]
 
 async function webScraper(url) {
   // setting data to the server accept the request
@@ -95,21 +87,6 @@ async function webScraper(url) {
     },
     {
       title: $(
-        "#leftColumn > div.largeTitle > article:nth-child(4) > div.textDiv > a"
-      ).text(),
-
-      link:
-        "https://br.investing.com" +
-        $(
-          "#leftColumn > div.largeTitle > article:nth-child(4) > div.textDiv > a"
-        ).attr("href"),
-
-      img: $(
-        "#leftColumn > div.largeTitle > article:nth-child(4) > a > img"
-      ).attr("data-src"),
-    },
-    {
-      title: $(
         "#leftColumn > div.largeTitle > article:nth-child(5) > div.textDiv > a"
       ).text(),
 
@@ -123,24 +100,46 @@ async function webScraper(url) {
         "#leftColumn > div.largeTitle > article:nth-child(5) > a > img"
       ).attr("data-src"),
     },
+    {
+      title: $(
+        "#leftColumn > div.largeTitle > article:nth-child(6) > div.textDiv > a"
+      ).text(),
+
+      link:
+        "https://br.investing.com" +
+        $(
+          "#leftColumn > div.largeTitle > article:nth-child(6) > div.textDiv > a"
+        ).attr("href"),
+
+      img: $(
+        "#leftColumn > div.largeTitle > article:nth-child(6) > a > img"
+      ).attr("data-src"),
+    },
   ];
 
   return news;
 }
 
 // loop through all links and return a single array with all of them gathered
-async function main(urls_array) {
-  const allNews2dArray = []
+async function main() {
+  // pages to scrape
+  const urls = [
+    "https://br.investing.com/news/economy", // economy
+    "https://br.investing.com/news/cryptocurrency-news", // crypto
+    "https://br.investing.com/news/economic-indicators", // economic indicators
+  ];
   
-  for (let i = 0; i < urls_array.length; i++) {
-    allNews2dArray.push(await webScraper(urls_array[i]))
+  const allNews2dArray = [];
+
+  for (let i = 0; i < urls.length; i++) {
+    allNews2dArray.push(await webScraper(urls[i]));
   }
 
-  const allNewsFlattenedArray = [].concat(...allNews2dArray)
+  const allNewsFlattenedArray = [].concat(...allNews2dArray);
 
-  return allNewsFlattenedArray
+  return allNewsFlattenedArray;
 }
 
-main(urls)
+main()
 
 module.exports.webScraper = main;

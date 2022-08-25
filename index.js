@@ -1,7 +1,7 @@
 require("dotenv").config();
 const { webScraper } = require("./web-scraper");
 const { Telegraf } = require("telegraf");
-const { fakeScraper } = require("./fake-scraper");
+// const { fakeScraper } = require("./fake-scraper");
 
 async function main() {
   const bot = new Telegraf(process.env.BOT_TOKEN);
@@ -55,7 +55,7 @@ User ID: ${ctx.message.chat.id}`
 
   bot.command("start_news", async (ctx) => {
     // get the last 5 news
-    let news = await fakeScraper();
+    let news = await webScraper();
 
     // send the news
     for (let i = news.length - 1; i >= 0; i--) {
@@ -77,7 +77,7 @@ ${news[i].link}
       let oldNews = [...news];
 
       // update news
-      const newsUpdate = await fakeScraper();
+      const newsUpdate = await webScraper();
 
       // look for the news that have changed and store it in onlyNewNews
       for (let i = 0; i < news.length; i++) {
